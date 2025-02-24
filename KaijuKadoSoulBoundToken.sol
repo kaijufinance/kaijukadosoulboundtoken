@@ -39,7 +39,7 @@ contract KaijuKadoSoulBoundToken is Initializable, ERC721Upgradeable, OwnableUpg
         returns (address)
     {
         address from = _ownerOf(tokenId);
-        require(from == address(0) || to == address(0), "This a Soulbound token. It cannot be transferred. It can only be burned by the token owner.");
+        require(from == address(0) || to == address(0), "This a Soulbound token. It cannot be transferred.");
         return super._update(to, tokenId, auth);
     }
 
