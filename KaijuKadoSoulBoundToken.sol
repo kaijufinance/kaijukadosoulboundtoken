@@ -11,21 +11,19 @@ contract KaijuKadoSoulBoundToken is Initializable, ERC721Upgradeable, OwnableUpg
     using CountersUpgradeable for CountersUpgradeable.Counter;
 
     CountersUpgradeable.Counter private _tokenIdCounter;
-    string private _imageUri;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
     }
 
-    function initialize(string memory imageUri) public initializer {
+    function initialize() public initializer {
         __ERC721_init("KaijuKadoSoulBoundToken", "KKSBT");
         __Ownable_init(msg.sender);
         __UUPSUpgradeable_init();
-        _imageUri = imageUri;
     }
 
-    function safeMint(address to) public onlyOwner {
+    function mint(address to) public {
         require(balanceOf(to) == 0, 'User already owns a soulbound token');
          
         uint256 tokenId = _tokenIdCounter.current();
@@ -39,7 +37,7 @@ contract KaijuKadoSoulBoundToken is Initializable, ERC721Upgradeable, OwnableUpg
         returns (address)
     {
         address from = _ownerOf(tokenId);
-        require(from == address(0) || to == address(0), "This a Soulbound token. It cannot be transferred.");
+        require(from == address(0) || to == address(0), "This a Soulbound token. It cannot be transferred. It can only be burned by the token owner.");
         return super._update(to, tokenId, auth);
     }
 
@@ -47,7 +45,7 @@ contract KaijuKadoSoulBoundToken is Initializable, ERC721Upgradeable, OwnableUpg
         _requireOwned(tokenId);
 
         string memory baseURI = _baseURI();
-        return bytes(baseURI).length > 0 ? string.concat(baseURI, _imageUri) : "";
+        return bytes(baseURI).length > 0 ? string.concat(baseURI) : "";
     }
 
     function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
